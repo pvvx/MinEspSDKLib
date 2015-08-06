@@ -40,13 +40,13 @@ FLASH_SIZE: Always set the size to 512 KB flash.<br>
 При заливке прошивки в модуль всегда устанавливайте размер Flash в 512 килобайт.<br> 
 Реальный размер Flash определяется автоматически во время старта SDK.<br> 
 
-Для компиляции SDK используется UDK:   
-[Unofficial Developer Kit](http://esp8266.ru/forum/forums/devkit/)<br>
+Для компиляции SDK используется [Unofficial Developer Kit](http://esp8266.ru/forum/forums/devkit/).<br>
 
-Создать отдельную библиотеку libsdk120.a можно<br> 
-с помощью lib/libsdk.bat после компиляции.<br>
-Для полного комплекта выйдет: libsdk120.a + libmgcc.a + libmicroc.a и include<br>
+В Eclipse заданы 3 опции Manage Configurations:<br>
+1. AutoMake (собрать проект для прошивки, используются установки в Eclipse)<br>
+2. CreateLib (собрать библиотеку libsdk.a, используются установки в Eclipse)<br>
+3. Default (собрать проект для прошивки, используя makefile)<br>
 
-libmicroc.a - https://github.com/anakod/esp_microc  
-      
+Полный комплект для сборки проекта с помощью SDK библиотеки:<br>
+libsdk.a + [libmicroc.a](https://github.com/anakod/esp_microc) и include<br>     
 

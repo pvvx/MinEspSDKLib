@@ -116,6 +116,8 @@ void read_macaddr_from_otp(uint8 *mac);
 
 void wifi_station_set_default_hostname(uint8 * mac);
 
+void user_init(void);
+
 #endif //_INCLUDE_ADD_FUNC_H_
 
 

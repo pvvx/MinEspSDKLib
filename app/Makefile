@@ -13,17 +13,14 @@
 #
 TARGET = eagle
 
-USE_OPEN_LWIP = 140
-USE_OPEN_DHCPS = 1
-
 ifndef PDIR # {
-GEN_IMAGES= eagle.app.v6.out
+GEN_IMAGES = eagle.app.v6.out
 GEN_BINS = eagle.app.v6.bin
 
 SUBDIRS =	\
 	sdklib \
 	user	
-	
+
 endif # } PDIR
 
 APPDIR = .
@@ -32,35 +29,18 @@ LDDIR = ../ld
 LD_FILE = $(LDDIR)/eagle.app.v6.ld
 
 COMPONENTS_eagle.app.v6 = \
-	sdklib/libsdk.a \
 	user/libuser.a
 
 LINK_LIBS = \
-    -lmicroc \
-	-lmgcc	\
-	-lmphy	\
-	-lpp	\
-	-lnet80211 \
-	-lmwpa	\
-	-lmmain	
+	-lsdk	
 
-ifndef USE_OPEN_LWIP 
-LINK_LIBS += \
-	-llwipif	\
-	-lmlwip	
-endif
-
-ifndef USE_OPEN_DHCPS
-LINK_LIBS += -ldhcps
-endif
-
-ifndef USE_OPEN_DHCPS
-LINK_LIBS += -ldhcps
-endif
+#    -lmicroc \
 
 LINKFLAGS_eagle.app.v6 = \
+	-nostartfiles	\
+	-nodefaultlibs	\
+	-nostdlib	\
 	-L../lib	\
-	-nostdlib \
     -T$(LD_FILE) \
 	-Wl,--no-check-sections	\
     -u call_user_start \
@@ -73,33 +53,28 @@ LINKFLAGS_eagle.app.v6 = \
 
 #	-Wl,--wrap=os_printf_plus \
 
-CONFIGURATION_DEFINES =	-D__ets__ \
+CONFIGURATION_DEFINES =	\
 			-DICACHE_FLASH	\
 			-DPBUF_RSV_FOR_WLAN	\
 			-DLWIP_OPEN_SRC	\
 			-DEBUF_LWIP
 
 ifdef USE_OPEN_LWIP
-CONFIGURATION_DEFINES +=-DUSE_OPEN_LWIP	
+CONFIGURATION_DEFINES +=-DUSE_OPEN_LWIP
 endif 
 
 ifdef USE_OPEN_DHCPS
 CONFIGURATION_DEFINES +=-DUSE_OPEN_DHCPS
 endif 
-
-
+			
 DEPENDS_eagle.app.v6 = \
                 $(LD_FILE) \
                 $(LDDIR)/eagle.rom.addr.v6.ld
 
 
-DEFINES +=				\
-	$(UNIVERSAL_TARGET_DEFINES)	\
-	$(CONFIGURATION_DEFINES)
+DEFINES += $(CONFIGURATION_DEFINES)
 
-DDEFINES +=				\
-	$(UNIVERSAL_TARGET_DEFINES)	\
-	$(CONFIGURATION_DEFINES)
+DDEFINES +=	$(CONFIGURATION_DEFINES)
 
 
 #############################################################
@@ -114,8 +89,8 @@ DDEFINES +=				\
 # Required for each makefile to inherit from the parent
 #
 
-INCLUDES := $(INCLUDES) -I $(PDIR)include
-INCLUDES += -I ./
+#INCLUDES := $(INCLUDES) -I $(PDIR)include
+#INCLUDES += -I ./
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
 

@@ -2,7 +2,7 @@
  * FileName: app_main.c
  * Description: Alternate SDK (libmain.a)
  * (c) PV` 2015
- * disasm SDK 1.1.2
+ * disasm SDK 1.2.0
 *******************************************************************************/
 #include "user_config.h"
 

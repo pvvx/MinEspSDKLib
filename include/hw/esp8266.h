@@ -18,6 +18,9 @@
 #ifndef ICACHE_RODATA_ATTR
 #define ICACHE_RODATA_ATTR	__attribute__((aligned(4), section(".irom.text")))
 #endif
+#ifndef DATA_IRAM_ATTR
+#define DATA_IRAM_ATTR __attribute__((aligned(4), section(".iram.data")))
+#endif
 
 extern volatile uint32 dport_[64];		// 0x3ff00000
 extern volatile uint32 io2_regs_[1536]; // 0x3ff20000
@@ -75,6 +78,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define FLASH_BASE		0x40200000
 #define FLASH_MIN_SIZE	0x00080000
 #define FLASH_MAX_SIZE	0x01000000
+#define FLASH_CACHE_MAX_SIZE	0x100000 // размер "кешируемой" области Flash
 
 /* interrupt related */
 #define ETS_SLC_INUM		1

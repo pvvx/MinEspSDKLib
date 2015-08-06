@@ -1,1 +1,3 @@
 *.output*
+/AutoMake/
+/GreateLib/
