@@ -79,6 +79,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define FLASH_MIN_SIZE	0x00080000
 #define FLASH_MAX_SIZE	0x01000000
 #define FLASH_CACHE_MAX_SIZE	0x100000 // размер "кешируемой" области Flash
+#define FLASH_SYSCONST_ADR 0x0007C000
 
 /* interrupt related */
 #define ETS_SLC_INUM		1

@@ -71,7 +71,6 @@ void ICACHE_FLASH_ATTR init_done_cb(void)
 {
     os_printf("\nSDK Init - Ok\nCurrent 'heap' size: %d bytes\n", system_get_free_heap_size());
 	os_printf("Set CPU CLK: %u MHz\n", ets_get_cpu_frequency());
-
 }
 
 /******************************************************************************

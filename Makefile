@@ -154,6 +154,7 @@ else
 endif
 
 CCFLAGS += -DUSE_FIX_QSPI_FLASH=$(SPI_SPEED)
+
 CFLAGS = $(CCFLAGS) $(DEFINES) $(INCLUDES)
 DFLAGS = $(CCFLAGS) $(DDEFINES) $(INCLUDES)
 
@@ -211,6 +212,7 @@ clean:
 clobber: $(SPECIAL_CLOBBER)
 	@$(foreach d, $(SUBDIRS), $(MAKE) -C $(d) clobber;)
 	@$(RM) -r $(ODIR)
+	@$(RM) -f lib/libsdk.a
 
 FlashAll: $(OUTBIN1) $(OUTBIN2) $(DEFAULTBIN) $(BLANKBIN) $(CLREEPBIN)
 	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)

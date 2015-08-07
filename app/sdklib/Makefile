@@ -2,7 +2,6 @@
 # Required variables for each makefile
 # Discard this section from all parent makefiles
 # Expected variables (with automatic defaults):
-#   CSRCS (all "C" files in the dir)
 #   SUBDIRS (all subdirs with a Makefile)
 #   GEN_LIBS - list of libs to be generated ()
 #   GEN_IMAGES - list of object file images to be generated ()
@@ -17,6 +16,20 @@ USE_OPEN_LWIP = 140
 USE_OPEN_DHCPS = 1
 
 UP_EXTRACT_DIR = ..
+
+COMPONENTS_libsdk = \
+	system/libaddmmain.a	\
+	phy/libaddmphy.a	\
+	wpa/libaddwpa.a	
+
+ifdef USE_OPEN_LWIP
+COMPONENTS_libsdk += lwip/liblwip.a	
+CONFIGURATION_DEFINES += -DUSE_OPEN_LWIP
+endif
+
+ifdef USE_OPEN_DHCPS
+CONFIGURATION_DEFINES += -DUSE_OPEN_DHCPS
+endif 
 
 ifndef PDIR # {
 GEN_LIBS = libsdk.a
@@ -54,16 +67,6 @@ endif
 endif # } PDIR
 
 APPDIR = .
-
-COMPONENTS_libsdk = \
-	system/libaddmmain.a	\
-	phy/libaddmphy.a	\
-	wpa/libaddwpa.a	
-
-ifdef USE_OPEN_LWIP
-COMPONENTS_libsdk += lwip/liblwip.a	
-endif
-
 
 #############################################################
 # Recursion Magic - Don't touch this!!

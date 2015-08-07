@@ -37,7 +37,7 @@ endif
 #
 
 #INCLUDES := $(INCLUDES) -I $(PDIR)include
-INCLUDES += -I ./include
+#INCLUDES += -I ./include
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
 

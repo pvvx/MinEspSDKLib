@@ -9,8 +9,8 @@
 #include "hw/esp8266.h"
 
 #define MAX_IDX_SYS_CONST 128
-#define MAX_IDX_USER_CONST 4
-#define SIZE_USER_CONST (MAX_IDX_SYS_CONST + MAX_IDX_USER_CONST*4)
+#define MAX_IDX_USER_CONST 32
+#define SIZE_USYS_CONST (MAX_IDX_SYS_CONST + MAX_IDX_USER_CONST*4)
 
 #define esp_init_data_default_addr (flashchip->chip_size - 4 * SPI_FLASH_SEC_SIZE)
 
@@ -98,7 +98,7 @@
 										// 7: use 113 byte force_freq_offset to correct frequency offset, bbpll is 160M , it only can correct + frequency offset . 
 #define	sys_const_force_freq_offset 113 // tx_param43: signed, unit is 8khz
 
-#define get_sys_const(a)  ((*((unsigned int *)((unsigned int)(a + FLASH_BASE + 0x7C000) & (~3))))>>(((unsigned int)a & 3) << 3))
-#define get_user_const(a) (*((unsigned int *)((unsigned int)(a + FLASH_BASE + 0x7C100) & (~3))))
+#define get_sys_const(a)  ((*((unsigned int *)((unsigned int)(a + FLASH_BASE + FLASH_SYSCONST_ADR) & (~3))))>>(((unsigned int)a & 3) << 3))
+#define get_user_const(a) (*((unsigned int *)((unsigned int)(a + FLASH_BASE + FLASH_SYSCONST_ADR + MAX_IDX_SYS_CONST) & (~3))))
 
 #endif /* _INCLUDE_SYS_CONST_H_ */

@@ -76,7 +76,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" description="Internal builder" id="cdt.managedbuild.toolchain.gnu.mingw.base.1544080900.2027218786" name="AutoMake" parent="org.eclipse.cdt.build.core.emptycfg" postannouncebuildStep="Create bin" postbuildStep="C:/Python27/python.exe  ../esptool.py elf2image -o ../bin/ -ff 80m -fm qio -fs 4m ${ProjName}.elf">
+				<configuration artifactExtension="elf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" description="Internal builder" id="cdt.managedbuild.toolchain.gnu.mingw.base.1544080900.2027218786" name="AutoMake" parent="org.eclipse.cdt.build.core.emptycfg" postannouncebuildStep="Create bin" postbuildStep="${workspace_loc}/${ProjName}/AutoMake.bat ${ProjName}.elf">
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.mingw.base.1544080900.2027218786." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.cross.base.1594720202" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.base" unusedChildren="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.611316985" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" value="xtensa-lx106-elf-" valueType="string"/>
@@ -140,7 +140,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="eagle.app.v6.asm|ld|lib|bin|info" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MinEspSDKLib.asm|eagle.app.v6.asm|ld|lib|bin|info" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -229,7 +229,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="app/user|eagle.app.v6.asm|ld|lib|bin|info" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="MinEspSDKLib.asm|app/user|eagle.app.v6.asm|ld|lib|bin|info" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

@@ -17,6 +17,8 @@ int	dual_flash_flag;
 #else
 	void *flash_read DATA_IRAM_ATTR;
 #endif
+
+uint32 flash_size DATA_IRAM_ATTR;
 //=============================================================================
 // define
 //-----------------------------------------------------------------------------
@@ -209,15 +211,18 @@ SpiFlashOpResult spi_flash_erase_block(uint32 blk)
  * Returns      : real flash size (512k, 1M, 2M, 4M, 8M, 16M)
  *******************************************************************************/
 uint32 ICACHE_FLASH_ATTR spi_flash_real_size(void) {
-	uint32 size = FLASH_MIN_SIZE;
-	uint32 x1[8], x2[8];
-	if (spi_flash_read(0, x1, 8*4) == SPI_FLASH_RESULT_OK) {
-		for (size = FLASH_MIN_SIZE; size < FLASH_MAX_SIZE; size <<= 1) {
-			if (spi_flash_read(size, x2, 8*4) != SPI_FLASH_RESULT_OK)	break;
-			else if (!ets_memcmp(x1, x2, 8*4)) break;
+	if(flash_size == 0) {
+		uint32 size = FLASH_MIN_SIZE;
+		uint32 x1[8], x2[8];
+		if (spi_flash_read(0, x1, 8*4) == SPI_FLASH_RESULT_OK) {
+			for (size = FLASH_MIN_SIZE; size < FLASH_MAX_SIZE; size <<= 1) {
+				if (spi_flash_read(size, x2, 8*4) != SPI_FLASH_RESULT_OK)	break;
+				else if (!ets_memcmp(x1, x2, 8*4)) break;
+			};
 		};
-	};
-	return size;
+		flash_size = size;
+	}
+	return flash_size;
 }
 
 #if 0 // not tested

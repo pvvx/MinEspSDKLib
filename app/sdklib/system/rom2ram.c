@@ -35,7 +35,7 @@ int ICACHE_FLASH_ATTR iram_buf_init(void)
 }
 
 
-void ICACHE_RAM_ATTR copy_s4d1(unsigned char * pd, void * ps, unsigned int len)
+int ICACHE_RAM_ATTR copy_s4d1(unsigned char * pd, void * ps, unsigned int len)
 {
 	union {
 		unsigned char uc[4];
@@ -71,10 +71,11 @@ void ICACHE_RAM_ATTR copy_s4d1(unsigned char * pd, void * ps, unsigned int len)
 			}
 		}
 	}
+	return 0;
 }
 
 
-void ICACHE_RAM_ATTR copy_s1d4(void * pd, unsigned char * ps, unsigned int len)
+int ICACHE_RAM_ATTR copy_s1d4(void * pd, unsigned char * ps, unsigned int len)
 {
 	union {
 		unsigned char uc[4];
@@ -111,6 +112,7 @@ void ICACHE_RAM_ATTR copy_s1d4(void * pd, unsigned char * ps, unsigned int len)
 		}
 		*p = tmp.ud;
 	}
+	return 0;
 }
 
 //extern void copy_s4d1(uint8 * pd, void * ps, uint32 len);
@@ -161,9 +163,20 @@ char * ICACHE_RAM_ATTR rom_strcpy(char * pd_, void * ps, unsigned int maxlen)
 	}tmp;
 	char * pd = pd_;
 	unsigned int *p = (unsigned int *)((unsigned int)ps & (~3));
-	*pd = 0;
-	char c;
 	unsigned int xlen = (unsigned int)ps & 3;
+#if 1
+	while(1) {
+		tmp.ud = *p++;
+		do {
+			if(maxlen-- == 0) {
+				*pd = 0;
+				return pd_;
+			}
+			if((*pd++ = tmp.uc[xlen++]) == 0) return pd_;
+			xlen &= 3;
+		} while(xlen);
+	}
+#else
 	if(xlen) {
 		tmp.ud = *p++;
 		while (maxlen)  {
@@ -200,6 +213,7 @@ char * ICACHE_RAM_ATTR rom_strcpy(char * pd_, void * ps, unsigned int maxlen)
 		}
 	}
 	return pd_;
+#endif
 }
 
 unsigned int ICACHE_RAM_ATTR rom_xstrcpy(char * pd, const char * ps)

@@ -1,3 +1,6 @@
 *.output*
 /AutoMake/
 /GreateLib/
+/info/libs/net80211/net80211
+/MinEspSDKLib.asm
+/eagle.app.v6.asm

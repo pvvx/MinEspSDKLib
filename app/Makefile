@@ -2,7 +2,6 @@
 # Required variables for each makefile
 # Discard this section from all parent makefiles
 # Expected variables (with automatic defaults):
-#   CSRCS (all "C" files in the dir)
 #   SUBDIRS (all subdirs with a Makefile)
 #   GEN_LIBS - list of libs to be generated ()
 #   GEN_IMAGES - list of object file images to be generated ()
@@ -18,7 +17,7 @@ GEN_IMAGES = eagle.app.v6.out
 GEN_BINS = eagle.app.v6.bin
 
 SUBDIRS =	\
-	sdklib \
+	sdklib	\
 	user	
 
 endif # } PDIR
@@ -27,6 +26,10 @@ APPDIR = .
 LDDIR = ../ld
 
 LD_FILE = $(LDDIR)/eagle.app.v6.ld
+
+DEPENDS_eagle.app.v6 = \
+                $(LD_FILE) \
+                $(LDDIR)/eagle.rom.addr.v6.ld
 
 COMPONENTS_eagle.app.v6 = \
 	user/libuser.a
@@ -53,29 +56,15 @@ LINKFLAGS_eagle.app.v6 = \
 
 #	-Wl,--wrap=os_printf_plus \
 
-CONFIGURATION_DEFINES =	\
+CONFIGURATION_DEFINES +=	\
 			-DICACHE_FLASH	\
 			-DPBUF_RSV_FOR_WLAN	\
 			-DLWIP_OPEN_SRC	\
 			-DEBUF_LWIP
 
-ifdef USE_OPEN_LWIP
-CONFIGURATION_DEFINES +=-DUSE_OPEN_LWIP
-endif 
-
-ifdef USE_OPEN_DHCPS
-CONFIGURATION_DEFINES +=-DUSE_OPEN_DHCPS
-endif 
-			
-DEPENDS_eagle.app.v6 = \
-                $(LD_FILE) \
-                $(LDDIR)/eagle.rom.addr.v6.ld
-
-
 DEFINES += $(CONFIGURATION_DEFINES)
 
 DDEFINES +=	$(CONFIGURATION_DEFINES)
-
 
 #############################################################
 # Recursion Magic - Don't touch this!!

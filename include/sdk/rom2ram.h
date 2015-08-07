@@ -8,8 +8,8 @@
 #ifndef _INCLUDE_ROM2RAM_H_
 #define _INCLUDE_ROM2RAM_H_
 
-void copy_s4d1(unsigned char * pd, void * ps, unsigned int len);
-void copy_s1d4(void * pd, unsigned char * ps, unsigned int len);
+int copy_s4d1(unsigned char * pd, void * ps, unsigned int len);
+int copy_s1d4(void * pd, unsigned char * ps, unsigned int len);
 unsigned int rom_strlen(const char * ps);
 char * rom_strcpy(char * pd_, void * ps, unsigned int maxlen);
 unsigned int rom_xstrcpy(char * pd, const char * ps);

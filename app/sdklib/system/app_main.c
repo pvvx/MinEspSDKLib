@@ -88,7 +88,11 @@ void call_user_start(void)
 		Cache_Read_Enable_def();
 		// Инициализация
 		startup();
-		// Передача управления ROM-BIOS
+		// Очистка стека и передача управления в ROM-BIOS
+		asm volatile (
+				"movi	a2, 1;"
+				"slli   a1, a2, 30;"
+				);
 		ets_run();
 }		
 #else
