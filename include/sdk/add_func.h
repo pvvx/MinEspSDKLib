@@ -15,7 +15,7 @@ struct s_info {
 	uint32 st_gw;	//+14
 	uint8 ap_mac[6];	//+18
 	uint8 st_mac[6];	//+1E
-} __attribute__((packed, aligned(4)));
+}  __attribute__((packed, aligned(4)));
 
 extern struct s_info info;
 

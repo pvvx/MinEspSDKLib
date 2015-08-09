@@ -99,7 +99,7 @@
 									<listOptionValue builtIn="false" value="USE_OPEN_DHCPS"/>
 									<listOptionValue builtIn="false" value="USE_FIX_QSPI_FLASH=80"/>
 								</option>
-								<option id="gnu.c.compiler.option.misc.other.518735291" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-Wno-pointer-sign -mtarget-align -mlongcalls -mno-serialize-volatile -mtext-section-literals -fno-tree-ccp -foptimize-register-move -fno-inline-functions -Wl,-EL -nostdlib" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.other.518735291" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-Wno-pointer-sign -mtarget-align -mlongcalls -mno-serialize-volatile -mtext-section-literals -fno-tree-ccp -foptimize-register-move -fno-inline-functions -ffunction-sections -fdata-sections -Wl,-EL -nostdlib" valueType="string"/>
 								<option id="gnu.c.compiler.option.warnings.toerrors.2115213600" name="Warnings as errors (-Werror)" superClass="gnu.c.compiler.option.warnings.toerrors" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.dialect.flags.171204109" name="Other dialect flags" superClass="gnu.c.compiler.option.dialect.flags" value="-std=gnu90" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.973061955" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
