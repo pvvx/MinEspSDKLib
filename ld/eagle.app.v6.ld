@@ -5,7 +5,7 @@ MEMORY
   dport0_0_seg :	org = 0x3FF00000, len = 0x00100
   dram0_0_seg :		org = 0x3FFE8000, len = 0x14000
   iram1_0_seg :		org = 0x40100000, len = 0x0C000
-  irom0_0_seg :		org = 0x40240000, len = 0x38000
+  irom0_0_seg :		org = 0x40240000, len = 0x3C000
 }
 
 PHDRS
@@ -86,7 +86,6 @@ SECTIONS
   .rodata : ALIGN(4)
   {
     _rodata_start = ABSOLUTE(.);
-    *(.sdk.version)
     *(.rodata)
     *(.rodata.*)
     *(.gnu.linkonce.r.*)
@@ -127,7 +126,8 @@ SECTIONS
   {
     _stext = .;
     _text_start = ABSOLUTE(.);
-    *(.entry.text) /* Jump Boot !!! */
+    *(.vectors.text)
+    *(.entry.text)
     *(.init.literal)
     *(.init)
     *(.literal .text .literal.* .text.* .stub .gnu.warning .gnu.linkonce.literal.* .gnu.linkonce.t.*.literal .gnu.linkonce.t.*)
