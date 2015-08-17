@@ -197,38 +197,29 @@ SpiFlashOpResult SPIEraseChip(void)
 // ROM:40004568
 void SPIFlashCnfig(uint32_t spi_interface, uint32_t spi_freg)
 {
-	//	Flash QIO80:
-	//  SPI_CTRL = 0x16ab000 - QIO_MODE | TWO_BYTE_STATUS_EN | WP_REG | SHARE_BUS | ENABLE_AHB | RESANDRES | FASTRD_MODE | BIT12
-	//	IOMUX_BASE = 0x305
-	//  Flash QIO40:
-	//	SPI_CTRL = 0x16aa101
-	//	IOMUX_BASE = 0x205
 	uint32 a6 = 0; // spi_interface > 4
 	uint32 a2;
-	SPI0_USER |= 4;
-	if(spi_interface == 0) a6 = 1<<24; // SPI_QIO_MODE
-	else if(spi_interface == 1) a6 = 1<<20; // SPI_QOUT_MODE
-	else if(spi_interface == 2) a6 = 1<<23; // SPI_DIO_MODE
-	else if(spi_interface == 3) a6 = 1<<14; // SPI_DOUT_MODE
-	else if(spi_interface == 4) a6 = 1<<13; // SPI_FASTRD_MODE
+	SPI0_USER |= SPI_FLASH_MODE; // 4
+	if(spi_interface == 0) a6 = SPI_QIO_MODE; // 1<<24
+	else if(spi_interface == 1) a6 = SPI_QOUT_MODE; // 1<<20
+	else if(spi_interface == 2) a6 = SPI_DIO_MODE;  // 1<<23
+	else if(spi_interface == 3) a6 = SPI_DOUT_MODE; // 1<<14
+	else if(spi_interface == 4) a6 = SPI_FASTRD_MODE; // 1<<13
 	if(spi_freg < 2) {
-		a2 = 0x100;
-		SPI0_CTRL |= 0x1000; // ???
+		a2 = BIT(MUX_SPI0_CLK_BIT); // 0x100
+		SPI0_CTRL |= BIT(12); // |= 0x1000
 		GPIO_MUX_CFG |= a2;
 	}
 	else {
 		a2 = (((spi_freg - 1) << 8) + spi_freg + (((spi_freg >> 1) - 1) << 4) - 1);
-		SPI0_CTRL &= 0xFFFFEFFF;
-		GPIO_MUX_CFG &= 0xEFF;
+		SPI0_CTRL &= ~BIT(12);
+		GPIO_MUX_CFG &= (~BIT(MUX_SPI0_CLK_BIT)) & MUX_CFG_MASK; // 0xEFF
 	}
 	a2 |= a6;
-	a2 |= 0x288000; // SPI_RESANDRES | SPI_SHARE_BUS | SPI_WP_REG
+	a2 |= SPI_RESANDRES | SPI_SHARE_BUS | SPI_WP_REG; // 0x288000
 	SPI0_CTRL |= a2;
-	SPI0_CMD = 0x100000;
+	SPI0_CMD = SPI_RES; // 0x100000;
 	while(SPI0_CMD != 0);
-	// [0x60000208] = 0x016aa101;
-	//				  0x00288000
-	//				  0x00411000 // BIT12 BIT16 BIT22
 }
 
 // ROM:400042AC

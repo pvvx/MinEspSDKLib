@@ -29,9 +29,9 @@ struct SPIFlashHeadSegment {
 };
 
 struct SPIFlashHeader { // полный заголовок flash (использует загрузчик BIOS)
-	struct SPIFlashHead head;
-	uint32 entry_point; // Entry point
-	struct SPIFlashHeadSegment seg; // Segment
+	struct SPIFlashHead head;		// +00
+	uint32 entry_point; 			// +04 Entry point
+	struct SPIFlashHeadSegment seg; // +08 Segment
 }  __attribute__((packed));
 
 typedef struct{
