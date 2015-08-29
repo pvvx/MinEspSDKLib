@@ -21,6 +21,9 @@
 #ifndef DATA_IRAM_ATTR
 #define DATA_IRAM_ATTR __attribute__((aligned(4), section(".iram.data")))
 #endif
+#ifndef ICACHE_IRAM_ATTR
+#define ICACHE_IRAM_ATTR __attribute__((section(".text")))
+#endif
 
 extern volatile uint32 dport_[64];		// 0x3ff00000
 extern volatile uint32 io2_regs_[1536]; // 0x3ff20000
@@ -76,7 +79,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define IRAM_SIZE		0x00008000	// Size: 32768 bytes
 /* FLASH */
 #define FLASH_BASE		0x40200000
-#define FLASH_MIN_SIZE	0x00080000
+#define FLASH_MIN_SIZE	0x00080000	// 512 k
 #define FLASH_MAX_SIZE	0x01000000
 #define FLASH_CACHE_MAX_SIZE	0x100000 // размер "кешируемой" области Flash
 #define FLASH_SYSCONST_ADR 0x0007C000
@@ -84,6 +87,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 /* interrupt related */
 #define ETS_SLC_INUM		1
 #define ETS_SPI_INUM        2
+#define ETS_RTC_INUM        3 // см. ets_rtc_int_register()
 #define ETS_GPIO_INUM       4
 #define ETS_UART_INUM       5
 #define ETS_MAX_INUM        6
@@ -107,8 +111,11 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define INTC_EDGE_EN	dport_[1]
 
 /* DPORT_SPI_READY: 0x3FF0000C
-	bit9: use wait SPI idle */
+  	bit0: cache flush start bit
+  	bit1: cache empty flag bit
+  	bit9: use wait SPI idle */
 #define DPORT_SPI_IDLE	dport_[3]
+#define CACHE_FLASH_CTRL_REG dport_[3]
 
 /* CLK_PRE_PORT: 0x3FF00014
 	bit0: =1 CPU 160 MHz, = 0 CPU 80 MHz */
@@ -370,8 +377,7 @@ typedef enum {
 #define TIMER1_ALARM	timer_[12] // the alarm value for the counter
 #define TIMER1_ALARM_DATA_MASK	0xffffffff
 /*	Returns	the	current	time	according	to	the	timer	timer. */
-#define	NOW()			TIMER1_COUNT // FRC2_COUNT
-
+#define	NOW()			TIMER1_COUNT // RTC_REG_READ(FRC2_COUNT_ADDRESS)
 
 /* WDT:0x60000900 registers */
 /* WDT_CTRL:0x60000900 register */
