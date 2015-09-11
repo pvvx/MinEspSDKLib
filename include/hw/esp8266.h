@@ -31,6 +31,7 @@ extern volatile uint32 uart0_[64];		// 0x60000000
 extern volatile uint32 spi1_[64];		// 0x60000100
 extern volatile uint32 spi0_[64];		// 0x60000200
 extern volatile uint32 gpio_[64];		// 0x60000300
+extern volatile uint32 hdrf_[64];		// 0x60000500
 extern volatile uint32 timer_[64];		// 0x60000600
 extern volatile uint32 rtc_[64];		// 0x60000700
 extern volatile uint32 iomux_[64];		// 0x60000800
@@ -56,6 +57,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define SPI1_BASE		spi1_		// 0x60000100
 #define SPI0_BASE		spi0_		// 0x60000200
 #define GPIO_BASE		gpio_		// 0x60000300
+#define HDRF_BASE		hdrf_		// 0x60000500
 #define TIMER_BASE		timer_		// 0x60000600
 #define RTC_BASE		rtc_		// 0x60000700
 #define IOMUX_BASE		iomux_		// 0x60000800
@@ -135,7 +137,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 /* 0x3ff00024
  bit7 16k IRAM base 0x40108000 = SPI cache flash  
  bit8 16k IRAM base 0x4010C000 = SPI cache flash   */
-//#define DPORT_OFF24		dport_[9]
+#define DPORT_OFF24		dport_[9]
 
 /* PERI_IO_SWAP: 0x3FF00028
 	bit0: swap two uart
