@@ -36,6 +36,7 @@ extern volatile uint32 timer_[64];		// 0x60000600
 extern volatile uint32 rtc_[64];		// 0x60000700
 extern volatile uint32 iomux_[64];		// 0x60000800
 extern volatile uint32 wdt_[64];		// 0x60000900
+extern volatile uint32 sdio_[64];		// 0x60000A00
 extern volatile uint32 scl_[64];		// 0x60000B00
 extern volatile uint32 sar_[64];		// 0x60000D00
 extern volatile uint32 i2s_[64];		// 0x60000E00
@@ -487,12 +488,12 @@ typedef enum {
 #define IO_RTC_INT_ENA			rtc_[10]
 /* RTC_SCRATCH0: 0x60000730 */
 #define IO_RTC_SCRATCH0			rtc_[12] // the register for software to save some values for watchdog reset
-/* RTC_SCRATCH0:	0x60000734 */
+/* RTC_SCRATCH1:	0x60000734 */
 #define IO_RTC_SCRATCH1			rtc_[13] // the register for software to save some values for watchdog reset
-/* RTC_SCRATCH0:	0x60000738 */
+/* RTC_SCRATCH2:	0x60000738 */
 #define IO_RTC_SCRATCH2			rtc_[14] // the register for software to save some values for watchdog reset
-/* RTC_SCRATCH0:	0x6000073C */
-#define IO_RTC_SCRATCH3			rtc_[15] // the register for software to save some values for watchdog reset
+/* RTC_SCRATCH3:	0x6000073C */
+#define IO_RTC_POWERUP			rtc_[15] // phy_set_powerup_option()
 /* RTC_GPIO_OUT:	0x60000768 */
 #define IO_RTC_GPIO_OUT			rtc_[26] // used by gpio16
 /* RTC_GPIO_ENABLE:	0x60000774 */
@@ -633,6 +634,12 @@ typedef enum {
 #define SET_PIN_FUNC_IOPORT(PIN_NUM) SET_PIN_FUNC(PIN_NUM, MUX_FUN_IO_PORT(PIN_NUM))
 // установить функцию GPIOn по умолчанию для SDK
 #define SET_PIN_FUNC_DEF_SDK(PIN_NUM) SET_PIN_FUNC(PIN_NUM, MUX_FUN_DEF_SDK(PIN_NUM))
+
+/* SDIO:0x60000A00 registers */
+/* SDIO_CFG 0x60000A04
+bit12 =1 SDIO dataoutput is at negative edges (SDIO V1.1)
+bit13 =1 SDIO dataoutput is at positive edges (SDIO V2.0)
+*/
 
 /* SCL:0x60000B00 registers */
 /* SLC_CONF0:0x60000B00 */

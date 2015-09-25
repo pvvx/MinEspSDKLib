@@ -1105,3 +1105,8 @@ bool wifi_set_phy_mode(enum phy_mode mode)
 	}
 	return true;
 }
+
+void system_phy_set_powerup_option(uint8 option)
+{
+	phy_set_powerup_option(option);
+}
