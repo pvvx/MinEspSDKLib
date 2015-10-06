@@ -23,7 +23,7 @@ libpp.a, libwpa.a, libnet80211.a, parts libphy.a, user_interface.o<br>
 Остальные части даны с исходными кодами.<br>
 
 Supported options 48 kbytes IRAM.<br>
-Supported 'Rapid Loader' and Flash 512 кbytes - 16 Mbytes.<br>
+Supported '[Rapid Loader](https://github.com/pvvx/Rapid_Loader/)' and Flash 512 кbytes - 16 Mbytes.<br>
 Поддержка расширенной памяти IRAM в 48 килобайт,<br>
 Flash от 512 килобайт до 16 Мегабайт и ускоряющего загрузку SDK 'лоадера'.<br>
 

@@ -383,23 +383,38 @@ int pm_rtc_clock_cali_proc(void)
 uint8 system_option[250];
 #define deep_sleep_option system_option[241]
 
-void _sys_deep_sleep_timer(void *timer_arg)
+void system_deep_sleep_local_2(void)
+{
+	ets_intr_lock();
+	Cache_Read_Disable();
+	SPI0_CMD = 0x200000;
+	while(SPI0_CMD);
+	struct rst_info rst_info;
+	ets_memset(rst_info, 0, sizeof(rst_info));
+	rst_info.reason = REASON_DEEP_SLEEP_AWAKE;
+	system_rtc_mem_write(0, &rst_info, sizeof(rst_info));
+	IO_RTC_2 = 1<<20; // rtc_enter_sleep()	HWREG(PERIPHS_RTC_BASEADDR, 0x08) = 0x100000;
+}
+
+
+void system_deep_sleep_instant(void *timer_arg) // В ранних SDK _sys_deep_sleep_timer()
 {
 	os_printf_plus("deep sleep %ds\n\n", timer_arg/1000000);
 	deep_sleep_set_option(deep_sleep_option);
-//	while(READ_PERI_REG(UART_STATUS(0))  & (UART_TXFIFO_CNT<<UART_TXFIFO_CNT_S));
-//	while(READ_PERI_REG(UART_STATUS(1))  & (UART_TXFIFO_CNT<<UART_TXFIFO_CNT_S));
+	dw0x3FF20DE0 = 0x3333;
+	ets_delay_us(20);
 	user_uart_wait_tx_fifo_empty(0, 500000);
 	user_uart_wait_tx_fifo_empty(1, 500000);
-
-	IO_RTC_0 = 0;
+	IO_RTC_0 = 0;	// 0x60000700 = 0
 	IO_RTC_0 &= ~BIT14;
 	IO_RTC_0 |= 0x30;
 	RTC_BASE[17] = 4; //0x60000744 = 4
 	IO_RTC_3 = 0x10010; // 	HWREG(PERIPHS_RTC_BASEADDR, 0x0C) = 0x10010;
 	RTC_BASE[18] = (RTC_BASE[18] &  0xFFFF01FF) | 0xFC00; // HWREG(PERIPHS_RTC_BASEADDR, 0x48) = (HWREG(PERIPHS_RTC_BASEADDR,0x48) & 0xFFFF01FF) | 0xFC00;
 	RTC_BASE[18] = (RTC_BASE[18] &  0xE00) | 0x80; // HWREG(PERIPHS_RTC_BASEADDR, 0x48) = (HWREG(PERIPHS_RTC_BASEADDR, 0x48) & 0xE00) | 0x80;
-	IO_RTC_SLP_VAL = IO_RTC_SLP_CNT_VAL + 136; //	HWREG(PERIPHS_RTC_BASEADDR, 0x04) = HWREG(PERIPHS_RTC_BASEADDR, 0x1C) + 0x88;
+	IO_RTC_4 = 0; //0x60000710 = 0
+	IO_RTC_4 = 0; //0x6000071C = 0
+	IO_RTC_SLP_VAL = IO_RTC_SLP_CNT_VAL + 136 + 256; //	HWREG(PERIPHS_RTC_BASEADDR, 0x04) = HWREG(PERIPHS_RTC_BASEADDR, 0x1C) + 0x88;
 	IO_RTC_6 = 8; // HWREG(PERIPHS_RTC_BASEADDR, 0x18) = 8;
 	IO_RTC_2 = 0x100000; // HWREG(PERIPHS_RTC_BASEADDR, 0x08) = 0x100000;
 	ets_delay_us(200);
@@ -407,17 +422,22 @@ void _sys_deep_sleep_timer(void *timer_arg)
 	IO_PAD_XPD_DCDC_CONF = 0x03; // HWREG(PERIPHS_RTC_BASEADDR, 0xA0) = 0x03;
 	IO_RTC_3 = 0x640C8; // HWREG(PERIPHS_RTC_BASEADDR, 0x0C) = 0x640C8;
 	IO_RTC_0 &= 0xFCF; // HWREG(PERIPHS_RTC_BASEADDR, 0x00) &= 0xFCF;
-	uint32 clpr = pm_rtc_clock_cali_proc();
-	pm_set_sleep_time(timer_arg);
-	RTC_GPI2_CFG &= 0x11; //	HWREG(PERIPHS_RTC_BASEADDR, 0x9C) &= 0x11;
+	RTC_GPI2_CFG = 0x11; // HWREG(PERIPHS_RTC_BASEADDR, 0x9C) = 0x11;
 	IO_PAD_XPD_DCDC_CONF = 0x03; // HWREG(PERIPHS_RTC_BASEADDR, 0xA0) = 0x03;
 
 	INTC_EDGE_EN &= 0x7E; // HWREG(PERIPHS_DPORT_BASEADDR, 4) &= 0x7E; // WDT int off
 	ets_isr_mask(1<<8); // Disable WDT isr
 
-	RTC_BASE[16] = 0x7F; // HWREG(PERIPHS_RTC_BASEADDR, 0x40) = 0x7F;
-	RTC_BASE[16] = 0x20; // HWREG(PERIPHS_RTC_BASEADDR, 0x44) = 0x20;
-	IO_RTC_4 = 0; // HWREG(PERIPHS_RTC_BASEADDR, 0x10) = 0x00;
+	DPORT_BASE[0] = (DPORT_BASE[0]&0x60)|0x0e; // nmi int
+	while(DPORT_BASE[0]&1);
+
+	RTC_BASE[16] = 0xFFF; // HWREG(PERIPHS_RTC_BASEADDR, 0x40) = 0xFFF;
+	RTC_BASE[17] = 0x20; // HWREG(PERIPHS_RTC_BASEADDR, 0x44) = 0x20;
+
+	uint32 clpr = pm_rtc_clock_cali_proc();
+	pm_set_sleep_time(timer_arg);
+
+//	IO_RTC_4 = 0; // HWREG(PERIPHS_RTC_BASEADDR, 0x10) = 0x00;
 
 	if(clpr == 0) {
 		IO_RTC_6 = 0; //	HWREG(PERIPHS_RTC_BASEADDR, 0x18) = 0x00;
@@ -425,15 +445,7 @@ void _sys_deep_sleep_timer(void *timer_arg)
 	else {
 		IO_RTC_6 = 8;	//	HWREG(PERIPHS_RTC_BASEADDR, 0x18) = 0x08;
 	}
-	ets_intr_lock();
-	Cache_Read_Disable();
-	SPI0_CMD = 0x200000;
-	while(SPI0_CMD);
-	struct rst_info rst_info;
-	system_rtc_mem_read(0, rst_info, sizeof(rst_info));
-	ets_memset(rst_info, 0, sizeof(rst_info));
-	system_rtc_mem_write(0, &rst_info, sizeof(rst_info));
-	IO_RTC_2 = 1<<20; // rtc_enter_sleep()	HWREG(PERIPHS_RTC_BASEADDR, 0x08) = 0x100000;
+	system_deep_sleep_local_2();
 }
 
 uint8 deep_sleep_flag;
@@ -444,11 +456,9 @@ void system_deep_sleep(uint32 time_in_us)
 	if(wifi_get_opmode() != STATION_MODE) wifi_softap_stop();
 	deep_sleep_flag = 1;
 	ets_timer_disarm(sta_con_timer);
-	ets_timer_setfn(sta_con_timer, _sys_deep_sleep_timer, 0);
+	ets_timer_setfn(sta_con_timer, system_deep_sleep_instant, 0);
 	ets_timer_arm_new(sta_con_timer,100, 0, 1);
 }
-
-uint8 deep_sleep_option;
 
 bool system_deep_sleep_set_option(uint8 option)
 {
@@ -1108,5 +1118,92 @@ bool wifi_set_phy_mode(enum phy_mode mode)
 
 void system_phy_set_powerup_option(uint8 option)
 {
-	phy_set_powerup_option(option);
+	phy_set_powerup_option(option); // { 0x6000073C = option }
 }
+
+void ICACHE_FLASH_ATTR system_phy_set_rfoption(uint8 option)
+{
+	phy_afterwake_set_rfoption(option); // { 0x6000076C = option }
+}
+
+void ICACHE_FLASH_ATTR phy_afterwake_set_rfoption(uint8 option)
+{
+#if SDK ver1.4.0	
+	uint32 x = RTC_RAM_BASE[0x6C>>2] & 0xFF00FFFF;	// 0x6000106C
+	RTC_RAM_BASE[0x6C>>2] = x | (option << 16);
+#else	
+	uint32 x = (RTC_RAM_BASE[0x60>>2] & 0xFFFF) | (option << 16);
+	RTC_RAM_BASE[0x60>>2] = x; // 0x60001060
+	RTC_RAM_BASE[0x78>>2] |= x; // 0x60001078 
+#endif	
+}
+
+void ICACHE_FLASH_ATTR phy_set_powerup_option(int option)
+{
+	RTC_RAM_BASE[0x3C>>2] = option; // 0x6000103C 
+}	
+
+bool ICACHE_FLASH_ATTR system_deep_sleep_set_option(uint8 option)
+{
+#if SDK >= ver1.3.0	
+	switch(option) {
+		case 0:
+		case 1:
+		case 2:
+		case 4:
+		_deep_sleep_mode = option;
+		return true;
+	}
+	return false;
+#else	
+	uint32 x = (RTC_RAM_BASE[0x60>>2] & 0xFFFF) | (option << 16);
+	RTC_RAM_BASE[0x60>>2] = x; // 0x60001060
+	rtc_mem_check(false); // пересчитать OR
+	// return всегда fasle
+#endif	
+}
+
+#if SDK >= ver1.3.0
+bool ICACHE_FLASH_ATTR deep_sleep_set_option(uint8 option)
+{
+	RTC_RAM_BASE[0x6C>>2] = (RTC_RAM_BASE[0x6C>>2] & 0xFF00FFFF)  | ((option&0xFF) << 16); // 0x6000106C
+	rtc_mem_check(false); // пересчитать OR
+	// return всегда fasle
+}
+#endif
+
+bool ICACHE_FLASH_ATTR rtc_mem_check(bool flg)
+{
+	volatile uint32 * ptr = &RTC_RAM_BASE[0];
+	uint32 region_or_crc = 0;
+#if SDK >= ver1.3.0	
+	while(ptr != &RTC_RAM_BASE[0x68>>2]) region_or_crc += *ptr++; // SDK 1.4.0
+	region_or_crc ^= 0x7F;
+#else	
+	while(ptr != &RTC_RAM_BASE[0x78>>2]) region_or_crc |= *ptr++; // Old SDK
+#endif	
+	if(flg == false) {
+		*ptr = region_or_crc; // RTC_RAM_BASE[0x78>>2] = region_or_crc
+		return false;
+	}
+	return (*ptr != region_or_crc);
+}
+
+uint32 ICACHE_FLASH_ATTR rtc_mem_backup(uint32 *mem_start, uint32 *mem_end, uint32 off_ram_rtc)
+{
+	uint32 i = (((uint32)mem_end - (uint32)mem_start + 3) >> 2) + 1;
+	volatile uint32 * ptr_reg = &RTC_RAM_BASE[off_ram_rtc>>2];
+	uint32 ret = i << 2;
+	while(i--) *ptr_reg++ = *mem_start++;
+	return ret;
+}
+
+uint32 ICACHE_FLASH_ATTR rtc_mem_recovery(uint32 *mem_start, uint32 *mem_end, uint32 off_ram_rtc)
+{
+	uint32 i = (((uint32)mem_end - (uint32)mem_start + 3) >> 2) + 1;
+	volatile uint32 * ptr_reg = &RTC_RAM_BASE[off_ram_rtc>>2];
+	uint32 ret = i << 2;
+	while(i--) *mem_start++ = *ptr_reg++;
+	return ret;
+}
+

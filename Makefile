@@ -4,7 +4,7 @@
 #
 #############################################################
 
-ESPOPTION ?= -p COM2 -b 460800
+ESPOPTION ?= -p COM6 -b 460800
 
 # SPI_SPEED = 40MHz or 80MHz
 SPI_SPEED?=80
@@ -14,11 +14,26 @@ SPI_MODE?=QIO
 SPI_SIZE?=512
 # 
 ADDR_FW1 = 0x00000
-ADDR_FW2 = 0x40000
+ADDR_FW2 = 0x06000
+# 
+#USERFADDR = 0x3C000
+USERFADDR = $(shell printf '0x%X\n' $$(( ($$(stat --printf="%s" $(OUTBIN2)) + 0xFFF + $(ADDR_FW2)) & (0xFFFFE000) )) )
+USERFBIN = ./webbin/WEBFiles.bin
+#
+FIRMWAREDIR := bin
+CLREEPBIN := ./$(FIRMWAREDIR)/clear_eep.bin
+CLREEPADDR := 0x79000
+DEFAULTBIN := ./$(FIRMWAREDIR)/esp_init_data_default.bin
+DEFAULTADDR := 0x7C000
+BLANKBIN := ./$(FIRMWAREDIR)/blank.bin
+BLANKADDR := 0x7E000
 
 # Base directory for the compiler
 XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin
+
 #PATH := $(XTENSA_TOOLS_ROOT);$(PATH)
+
+GET_FILESIZE ?= 
 
 # base directory of the ESP8266 SDK package, absolute
 #SDK_BASE	?= c:/Espressif/ESP8266_SDK
@@ -31,14 +46,6 @@ NM := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-nm
 CPP = $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-cpp
 OBJCOPY = $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objcopy
 OBJDUMP := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objdump
-#
-FIRMWAREDIR := bin
-DEFAULTBIN := ./$(FIRMWAREDIR)/esp_init_data_default.bin
-DEFAULTADDR := 0x7C000
-BLANKBIN := ./$(FIRMWAREDIR)/blank.bin
-BLANKADDR := 0x7E000
-CLREEPBIN := ./$(FIRMWAREDIR)/clear_eep.bin
-CLREEPADDR := 0x79000
 
 SDK_TOOLS	?= c:/Espressif/utils
 #ESPTOOL		?= $(SDK_TOOLS)/esptool
@@ -195,7 +202,7 @@ else
 endif	
 	@dd if=../bin/0.bin >>../bin/$(ADDR_FW1).bin
 
-all: .subdirs $(OBJS) $(OLIBS) $(OIMAGES) $(OBINS) $(SPECIAL_MKTARGETS)
+all: .subdirs $(OBJS) $(OLIBS) $(SPECIAL_MKTARGETS) $(OIMAGES) $(OBINS) 
 
 $(SPECIAL_MKTARGETS): $(INPLIB) 
 	@$(RM) -f $@
@@ -214,14 +221,20 @@ clobber: $(SPECIAL_CLOBBER)
 	@$(RM) -r $(ODIR)
 	@$(RM) -f lib/libsdk.a
 
-FlashAll: $(OUTBIN1) $(OUTBIN2) $(DEFAULTBIN) $(BLANKBIN) $(CLREEPBIN)
-	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
+FlashUserFiles: $(USERFBIN)
+	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(USERFADDR) $(USERFBIN)
+
+FlashAll: $(OUTBIN1)  $(USERFBIN) $(OUTBIN2) $(DEFAULTBIN) $(BLANKBIN) $(CLREEPBIN)
+	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2) $(USERFADDR) $(USERFBIN)  $(CLREEPADDR) $(CLREEPBIN) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
 
 FlashClearSetings: $(CLREEPBIN) $(DEFAULTBIN) $(BLANKBIN)
-	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
+	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(CLREEPADDR) $(CLREEPBIN) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
 
 FlashCode: $(OUTBIN1) $(OUTBIN2)
 	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2)
+
+$(USERFBIN):
+	./WEBFS22.exe -h "*.htm, *.html, *.cgi, *.xml, *.bin, *.txt, *.wav" -z "*.inc, snmp.bib" ./WEBFiles ./webbin WEBFiles.bin
 
 .subdirs:
 	@set -e; $(foreach d, $(SUBDIRS), $(MAKE) -C $(d);)
@@ -277,6 +290,6 @@ $(foreach lib,$(GEN_LIBS),$(eval $(call MakeLibrary,$(basename $(lib)))))
 
 $(foreach image,$(GEN_IMAGES),$(eval $(call MakeImage,$(basename $(image)))))
 
-INCLUDES := -I $(PDIR)include
+INCLUDES := $(INCLUDES) -I $(PDIR)include
 #PDIR := ../$(PDIR)
 #sinclude $(PDIR)Makefile
