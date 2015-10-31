@@ -63,6 +63,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define RTC_BASE		rtc_		// 0x60000700
 #define IOMUX_BASE		iomux_		// 0x60000800
 #define WDT_BASE		wdt_		// 0x60000900
+#define SDIO_BASE		sdio_		// 0x60000A00
 #define SCL_BASE		scl_		// 0x60000B00
 #define SAR_BASE		sar_		// 0x60000D00
 #define I2S_BASE		i2s_		// 0x60000E00
@@ -163,6 +164,22 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
  reg 0x3ff20020, bit2, bit0 represents uart1 and uart0 respectively
 uart0 and uart1 intr combine together, when interrupt occur */
 #define REG_UART_INTS io2_regs_[8]
+
+/* PHY_TIMER32BIT: 3ff20c00
+ * Step: 1us * phy_get_mactime(), system_get_time() */
+/* REG?: 0x3ff20c20 */
+
+/* MAC_TIMER64BIT_COUNT: 0x3ff21048
+ * Step: 1us * wDev_MacTim1Arm() */
+#define MAC_TIMER64BIT_COUNT_ADDR 0x3ff21048
+//#define MAC_TIMER64BIT_COUNT_LW IOREG(0x3ff21048)
+//#define MAC_TIMER64BIT_COUNT_HI IOREG(0x3ff2104c)
+/* MAC_TIMER64BIT_ALARM: 0x3ff210cc
+ * Step: 1us * wDev_MacTim1Arm() */
+/* MAC_TIMER64BIT_INT_ENA?: 0x3FF210C8
+ * bit31: ena * wDev_MacTim1Arm() */
+/* 0x3FF21058 bit31 wDev_MacTim1SetFunc() */
+
 
 /* SPIx controller registers index */
 #define IDX_SPI_CMD			0

@@ -43,13 +43,13 @@ extern int chip_v6_set_chan_offset(int, int);
 extern uint8 phy_rx_gain_dc_flag;
 extern uint8 * phy_rx_gain_dc_table;
 extern sint16 TestStaFreqCalValInput;
-uint8 SDK_VERSION[] = {"1.4.0"};
-uint16 lwip_timer_interval;
 extern struct rst_info rst_inf;
-#elif DEF_SDK_VERSION >= 1200
-uint8 SDK_VERSION[] = {"1.3.0"};
+#endif
+#if DEF_SDK_VERSION >= 1200
+uint8 SDK_VERSION[] = {SDK_VERSION_TXT};
 uint16 lwip_timer_interval;
 #endif
+
 
 #ifdef USE_OPEN_LWIP
 extern bool default_hostname; // in eagle_lwip_if.c
@@ -538,7 +538,7 @@ void ICACHE_FLASH_ATTR startup(void)
 #ifdef DEBUG_UART
 		os_printf("\nSave rx_gain_dc table (%u, %u)\n", buf[0xf8], phy_rx_gain_dc_flag );
 #endif
-		wifi_param_save_protect_with_check((flashchip->chip_size/flashchip->sector_size) - 4, flashchip->sector_size, buf, 756);
+		wifi_param_save_protect_with_check((flashchip->chip_size/flashchip->sector_size) - 4, flashchip->sector_size, buf, SIZE_SAVE_SYS_CONST);
 	}
 #endif
 	os_free(buf);
