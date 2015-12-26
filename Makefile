@@ -27,7 +27,7 @@ BLANKBIN := ./$(FIRMWAREDIR)/blank.bin
 BLANKADDR := 0x7E000
 
 # Base directory for the compiler
-XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin
+XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin/
 
 #PATH := $(XTENSA_TOOLS_ROOT);$(PATH)
 
@@ -37,13 +37,13 @@ GET_FILESIZE ?=
 #SDK_BASE	?= c:/Espressif/ESP8266_SDK
 
 # select which tools to use as compiler, librarian and linker
-CC := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
-AR := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-ar
-LD := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-gcc
-NM := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-nm
-CPP = $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-cpp
-OBJCOPY = $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objcopy
-OBJDUMP := $(XTENSA_TOOLS_ROOT)/xtensa-lx106-elf-objdump
+CC := $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-gcc
+AR := $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-ar
+LD := $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-gcc
+NM := $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-nm
+CPP = $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-cpp
+OBJCOPY = $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-objcopy
+OBJDUMP := $(XTENSA_TOOLS_ROOT)xtensa-lx106-elf-objdump
 
 SDK_TOOLS	?= c:/Espressif/utils
 #ESPTOOL		?= $(SDK_TOOLS)/esptool
