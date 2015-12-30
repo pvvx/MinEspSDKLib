@@ -19,19 +19,19 @@ CFLAGS += -mlongcalls -mtext-section-literals
 CDIRS += include
 
 TARGET.LIBS += lwip/api/liblwipapi
-lwip/api/liblwipapi.SRCS = $(wildcard app/sdklib/lwip/api/*.c)
+lwip/api/liblwipapi.SRCS = $(wildcard src/lwip/api/*.c)
 
 TARGET.LIBS += lwip/app/liblwipapp
-lwip/app/liblwipapp.SRCS = $(wildcard app/sdklib/lwip/app/*.c)
+lwip/app/liblwipapp.SRCS = $(wildcard src/lwip/app/*.c)
 
 TARGET.LIBS += lwip/core/liblwipcore
-lwip/core/liblwipcore.SRCS = $(wildcard app/sdklib/lwip/core/*.c)
+lwip/core/liblwipcore.SRCS = $(wildcard src/lwip/core/*.c)
 
 TARGET.LIBS += lwip/core/ipv4/liblwipipv4
-lwip/core/ipv4/liblwipipv4.SRCS = $(wildcard app/sdklib/lwip/core/ipv4/*.c)
+lwip/core/ipv4/liblwipipv4.SRCS = $(wildcard src/lwip/core/ipv4/*.c)
 
 TARGET.LIBS += lwip/netif/liblwipnetif
-lwip/netif/liblwipnetif.SRCS = $(wildcard app/sdklib/lwip/netif/*.c)
+lwip/netif/liblwipnetif.SRCS = $(wildcard src/lwip/netif/*.c)
 
 TARGET.LIBS += lwip/liblwip
 lwip/liblwip.DEPLIBS += \
@@ -42,16 +42,16 @@ lwip/liblwip.DEPLIBS += \
   lwip/netif/liblwipnetif
 
 TARGET.LIBS += phy/libaddmphy
-phy/libaddmphy.SRCS = $(wildcard app/sdklib/phy/*.c)
+phy/libaddmphy.SRCS = $(wildcard src/phy/*.c)
 
 TARGET.LIBS += pp/libaddpp
-pp/libaddpp.SRCS = $(wildcard app/sdklib/pp/*.c)
+pp/libaddpp.SRCS = $(wildcard src/pp/*.c)
 
 TARGET.LIBS += system/libaddmmain
-system/libaddmmain.SRCS = $(wildcard app/sdklib/system/*.c)
+system/libaddmmain.SRCS = $(wildcard src/system/*.c)
 
 TARGET.LIBS += wpa/libaddwpa
-wpa/libaddwpa.SRCS = $(wildcard app/sdklib/wpa/*.c)
+wpa/libaddwpa.SRCS = $(wildcard src/wpa/*.c)
 
 TARGET.LIBS += libsdk
 libsdk.DEPLIBS += \
@@ -90,14 +90,15 @@ ifeq (,$(USE_OPEN_DHCPS))
   libsdk.DEPLIBS += esp/libdhcps
 endif
 
-TARGET.LIBS += libuser
-libuser.SRCS += $(wildcard app/user/*.c)
-libuser.LDSCRIPTS += \
+TARGET.LIBS += libmem_usage
+libmem_usage.SRCS += $(wildcard example/mem_usage/*.c)
+
+TARGET.IMGS += mem_usage
+mem_usage.LDSCRIPTS += \
   ld/eagle.app.v6.ld \
   ld/eagle.rom.addr.v6.ld
-
-user.DEPLIBS += libsdk libuser
-user.LDFLAGS += \
+mem_usage.DEPLIBS += libsdk libmem_usage
+mem_usage.LDFLAGS += \
   -nostartfiles \
 	-nodefaultlibs \
 	-nostdlib \
@@ -106,5 +107,5 @@ user.LDFLAGS += \
   -u call_user_start \
   -Wl,-static
 
-$(foreach target,$(TARGET.LIBS),$(eval $(call LIB_RULES,$(target))))
-$(eval $(call IMG_RULES,user))
+$(foreach lib,$(TARGET.LIBS),$(eval $(call LIB_RULES,$(lib))))
+$(foreach img,$(TARGET.IMGS),$(eval $(call IMG_RULES,$(img))))
