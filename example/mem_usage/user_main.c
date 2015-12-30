@@ -10,7 +10,6 @@
 #include "user_interface.h"
 #include "sdk/rom2ram.h"
 
-#if 0 // для расчета ипользования памяти meSDK = 0, для примера = 1
 /******************************************************************************
  * FunctionName : wifi_handle_event_cb
  * Description  :
@@ -90,8 +89,3 @@ void ICACHE_FLASH_ATTR user_init(void) {
 	wifi_set_event_handler_cb(wifi_handle_event_cb);
 	system_init_done_cb(init_done_cb);
 }
-#else
-void ICACHE_FLASH_ATTR user_init(void) {
-}
-#endif
-

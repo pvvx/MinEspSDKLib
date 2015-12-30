@@ -90,15 +90,12 @@ ifeq (,$(USE_OPEN_DHCPS))
   libsdk.DEPLIBS += esp/libdhcps
 endif
 
-TARGET.LIBS += libmem_usage
-libmem_usage.SRCS += $(wildcard example/mem_usage/*.c)
+# Application
 
-TARGET.IMGS += mem_usage
-mem_usage.LDSCRIPTS += \
+LDSCRIPTS += \
   ld/eagle.app.v6.ld \
   ld/eagle.rom.addr.v6.ld
-mem_usage.DEPLIBS += libsdk libmem_usage
-mem_usage.LDFLAGS += \
+LDFLAGS += \
   -nostartfiles \
 	-nodefaultlibs \
 	-nostdlib \
@@ -106,6 +103,18 @@ mem_usage.LDFLAGS += \
 	-Wl,--no-check-sections	\
   -u call_user_start \
   -Wl,-static
+
+TARGET.LIBS += libdummy_app
+libdummy_app.SRCS += $(wildcard example/dummy_app/*.c)
+
+TARGET.IMGS += dummy_app
+dummy_app.DEPLIBS += libsdk libdummy_app
+
+TARGET.LIBS += libmem_usage
+libmem_usage.SRCS += $(wildcard example/mem_usage/*.c)
+
+TARGET.IMGS += mem_usage
+mem_usage.DEPLIBS += libsdk libmem_usage
 
 $(foreach lib,$(TARGET.LIBS),$(eval $(call LIB_RULES,$(lib))))
 $(foreach img,$(TARGET.IMGS),$(eval $(call IMG_RULES,$(img))))
