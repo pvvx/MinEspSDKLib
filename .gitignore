@@ -1,6 +1,5 @@
-*.output*
-/AutoMake/
-/GreateLib/
-/MinEspSDKLib.asm
-/eagle.app.v6.asm
-/CreateLib/
+bin/
+obj/
+doc/
+lib/
+!lib/esp
