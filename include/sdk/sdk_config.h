@@ -22,11 +22,8 @@
 // #define USE_OPEN_DHCPS 1	 // использовать исходник или либу из SDK (назначается в app/MakeFile #USE_OPEN_DHCP = 1)
 
 #ifndef USE_MAX_IRAM
-	#define USE_MAX_IRAM  48 // использовать часть cache под IRAM, IRAM size = 49152 байт
+//	#define USE_MAX_IRAM  48 // использовать часть cache под IRAM, IRAM size = 49152 байт
 #endif
-
-/* USE_FIX_SDK_FLASH_SIZE - включена "песочница" для SDK в 512 килобайт flash. */
-//#define USE_FIX_SDK_FLASH_SIZE  
 
 /*  USE_FIX_QSPI_FLASH - использовать фиксированную частоту работы QPI
 	и 'песочницу' в 512 кбайт для SDK с flash

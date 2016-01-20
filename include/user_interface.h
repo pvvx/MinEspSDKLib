@@ -66,8 +66,10 @@ enum {
     USER_TASK_PRIO_0 = 0,
     USER_TASK_PRIO_1,
     USER_TASK_PRIO_2,
-    USER_TASK_PRIO_MAX
+    USER_TASK_PRIO_MAX,
+	SDK_TASK_PRIO = 22
 };
+
 
 bool system_os_task(os_task_t task, uint8 prio, os_event_t *queue, uint8 qlen);
 bool system_os_post(uint8 prio, os_signal_t sig, os_param_t par);
@@ -250,7 +252,12 @@ bool wifi_station_dhcpc_set_maxtry(uint8 num);
 
 char* wifi_station_get_hostname(void);
 bool wifi_station_set_hostname(char *name);
-
+/* SDK 1.5.0
+int wifi_station_set_cert_key(uint8 *client_cert, int client_cert_len,
+    uint8 *private_key, int private_key_len,
+    uint8 *private_key_passwd, int private_key_passwd_len);
+void wifi_station_clear_cert_key(void);
+*/
 struct softap_config {
     uint8 ssid[32];
     uint8 password[64];	// +32
@@ -275,7 +282,7 @@ struct station_info {
 };
 
 struct dhcps_lease {
-//	bool enable; -> dhcps_lease_flag
+//	bool enable;
 	struct ip_addr start_ip;
 	struct ip_addr end_ip;
 };
@@ -468,7 +475,7 @@ enum wps_cb_status {
 	WPS_CB_ST_SUCCESS = 0,
 	WPS_CB_ST_FAILED,
 	WPS_CB_ST_TIMEOUT,
-	WPS_CB_ST_WEP
+	WPS_CB_ST_WEP,
 };
 
 bool wifi_wps_enable(WPS_TYPE_t wps_type);
