@@ -41,7 +41,9 @@
 #define SPI_RESANDRES					(BIT(15))
 #define SPI_DOUT_MODE					(BIT(14))
 #define SPI_FASTRD_MODE					(BIT(13))
-//#define SPI_PRESCALER?				bit0..12: 80MHz = 0x1000, 40MHz = 0x0101, 26MHz = 0x0202, 20MHz = 0x0313
+#define SPI_PRESCALER					0x0000FFFF
+#define SPI_PRESCALER_S					0
+// bit0..12: 80MHz = 0x1000, 40MHz = 0x0101, 26MHz = 0x0202, 20MHz = 0x0313
 #define SPI_CTRL_F_MASK		(~0x1FFF)
 #define SPI_CTRL_F80MHZ		0x1000		// + GPIO_MUX_CFG |= BIT(MUX_SPI0_CLK_BIT)
 #define SPI_CTRL_F40MHZ		0x0101		// + GPIO_MUX_CFG &= ~(BIT(MUX_SPI0_CLK_BIT))
@@ -156,6 +158,14 @@
 #define SPI_WR_STATUS(i)			(REG_SPI_BASE(i) + 0x28) //00000000/00000000
 
 #define SPI_PIN(i)					(REG_SPI_BASE(i) + 0x2C) //0000001e/0000001e
+#define SPI_PIN_CS_0_					(BIT(31))	// CS = "0"
+#define SPI_PIN_CS_0					(BIT(30))	// CS = "0"
+#define SPI_PIN_CLK_INV					(BIT(29))	// инверсия сигнала CLK
+#define SPI_PIN_CLK_CS					(BIT(19))	// CS = "0", CLK = "1"
+#define SPI_PIN_MOSI_MISO				(BIT(16))	// сигнал MISO выводится на MOSI
+#define SPI_PIN_CS_CLK					(BIT(11))	// сигнал на CS = CLK
+#define SPI_PIN_CS_INV 					(BIT(6))	// инверсия сигнала CS
+#define SPI_PIN_CLK_0 					(BIT(5))	// Выход CLK = "0"
 #define SPI_CS2_DIS						(BIT(2))
 #define SPI_CS1_DIS						(BIT(1))
 #define SPI_CS0_DIS						(BIT(0))

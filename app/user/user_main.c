@@ -22,6 +22,11 @@ void ICACHE_FLASH_ATTR wifi_handle_event_cb(System_Event_t *evt)
 	int i;
 	os_printf("WiFi event %x\n", evt->event);
 	switch (evt->event) {
+		case EVENT_SOFTAPMODE_PROBEREQRECVED:
+			os_printf("Probe Request (MAC:" MACSTR ", RSSI:%d)\n",
+					MAC2STR(evt->event_info.ap_probereqrecved.mac),
+					evt->event_info.ap_probereqrecved.rssi);
+			break;
 		case EVENT_STAMODE_CONNECTED:
 			os_printf("Connect to ssid %s, channel %d\n",
 					evt->event_info.connected.ssid,
@@ -57,6 +62,9 @@ void ICACHE_FLASH_ATTR wifi_handle_event_cb(System_Event_t *evt)
 					MAC2STR(evt->event_info.sta_disconnected.mac),
 					evt->event_info.sta_disconnected.aid);
 			break;
+		case EVENT_STAMODE_DHCP_TIMEOUT:
+			os_printf("DHCP timeot\n");
+			break;
 /*		default:
 			break; */
 		}
@@ -74,6 +82,9 @@ void ICACHE_FLASH_ATTR init_done_cb(void)
 	os_printf("Set CPU CLK: %u MHz\n", ets_get_cpu_frequency());
 }
 
+extern uint32 _lit4_start[]; // addr start BSS in IRAM
+extern uint32 _lit4_end[]; // addr end BSS in IRAM
+
 /******************************************************************************
  * FunctionName : user_init
  * Description  : entry of user application, init user function here
@@ -84,6 +95,8 @@ void ICACHE_FLASH_ATTR user_init(void) {
 	if(eraminfo.size > 0) os_printf("Found free IRAM: base: %p, size: %d bytes\n", eraminfo.base,  eraminfo.size);
 	os_printf("System memory:\n");
     system_print_meminfo();
+    os_printf("bssi  : 0x%x ~ 0x%x, len: %d\n", &_lit4_start, &_lit4_end, (uint32)(&_lit4_end) - (uint32)(&_lit4_start));
+    os_printf("free  : 0x%x ~ 0x%x, len: %d\n", (uint32)(&_lit4_end), (uint32)(eraminfo.base) + eraminfo.size, (uint32)(eraminfo.base) + eraminfo.size - (uint32)(&_lit4_end));
     os_printf("Start 'heap' size: %d bytes\n", system_get_free_heap_size());
 	os_printf("Set CPU CLK: %u MHz\n", ets_get_cpu_frequency());
 	system_deep_sleep_set_option(0);

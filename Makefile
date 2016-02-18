@@ -14,13 +14,11 @@ SPI_MODE?=QIO
 SPI_SIZE?=512
 # 
 ADDR_FW1 = 0x00000
-ADDR_FW2 = 0x40000
+ADDR_FW2 = 0x07000
 # 
 #USERFADDR = $(shell printf '0x%X\n' $$(( ($$(stat --printf="%s" $(OUTBIN2)) + 0xFFF + $(ADDR_FW2)) & (0xFFFFE000) )) )
 #
 FIRMWAREDIR := bin
-CLREEPBIN := ./$(FIRMWAREDIR)/clear_eep.bin
-CLREEPADDR := 0x79000
 DEFAULTBIN := ./$(FIRMWAREDIR)/esp_init_data_default.bin
 DEFAULTADDR := 0x7C000
 BLANKBIN := ./$(FIRMWAREDIR)/blank.bin
@@ -219,12 +217,12 @@ clobber: $(SPECIAL_CLOBBER)
 	@$(RM) -r $(ODIR)
 	@$(RM) -f lib/libsdk.a
 
-FlashAll: $(OUTBIN1)  $(USERFBIN) $(OUTBIN2) $(DEFAULTBIN) $(BLANKBIN) $(CLREEPBIN)
-	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2) $(CLREEPADDR) $(CLREEPBIN) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
+FlashAll: $(OUTBIN1)  $(USERFBIN) $(OUTBIN2) $(DEFAULTBIN) $(BLANKBIN) 
+	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
 
-FlashClearSetings: $(CLREEPBIN) $(DEFAULTBIN) $(BLANKBIN)
-	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(CLREEPADDR) $(CLREEPBIN) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
-
+FlashClearSetings: $(DEFAULTBIN) $(BLANKBIN)
+	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(DEFAULTADDR) $(DEFAULTBIN) $(BLANKADDR) $(BLANKBIN)
+	
 FlashCode: $(OUTBIN1) $(OUTBIN2)
 	$(ESPTOOL) $(ESPOPTION) write_flash $(flashimageoptions) $(ADDR_FW1) $(OUTBIN1) $(ADDR_FW2) $(OUTBIN2)
 

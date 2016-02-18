@@ -69,7 +69,7 @@ extern volatile uint32 io4_regs_[384];	// 0x60009800
 #define I2S_BASE		i2s_		// 0x60000E00
 #define UART1_BASE		uart1_		// 0x60000F00
 #define RTC_RAM_BASE	rtc_ram_	// 0x60001000	// Size: 1024 bytes
-#define RTC_MEM_BASE	rtc_mem_	// 0x60001100
+#define RTC_MEM_BASE	rtc_mem_	// 0x60001100   // Size: 768 bytes, 192 dword registers, user data последние 512 байт
 
 /* io4 section */
 #define IO4_BASE		io4_regs_	// 0x60009800	// Size: 1536 bytes

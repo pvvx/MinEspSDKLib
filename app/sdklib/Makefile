@@ -54,6 +54,7 @@ ADDLIBS_libsdk = \
 	libmphy.a	\
 	libpp.a	\
 	libmwpa.a	\
+	libcrypto.a	\
 	libnet80211.a
 
 ifndef USE_OPEN_LWIP 
@@ -80,7 +81,6 @@ APPDIR = .
 #   its parent path, and not its siblings
 #
 # Required for each makefile to inherit from the parent
-#
 
 # INCLUDES := $(INCLUDES) -I $(PDIR)include
 PDIR := ../$(PDIR)

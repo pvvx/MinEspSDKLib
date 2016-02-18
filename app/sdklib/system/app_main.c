@@ -26,8 +26,12 @@
 //=============================================================================
 // Define
 //-----------------------------------------------------------------------------
-#ifdef USE_MAX_IRAM
+#if defined(USE_MAX_IRAM) 
+ #if USE_MAX_IRAM == 48
 	#define Cache_Read_Enable_def() Cache_Read_Enable(0, 0, 0)
+ #else
+	#define Cache_Read_Enable_def() Cache_Read_Enable(0, 0, 1)
+ #endif
 #else
 	#define Cache_Read_Enable_def() Cache_Read_Enable(0, 0, 1)
 #endif
@@ -114,6 +118,9 @@ void __attribute__((section(".entry.text"))) call_user_start1(void)
 #else  // SPI на 40 MHz
 		GPIO_MUX_CFG &= ~(1<< MUX_SPI0_CLK_BIT);
 		SPI0_CTRL = (SPI0_CTRL & SPI_CTRL_F_MASK) | SPI_CTRL_F40MHZ;
+#endif
+#ifdef USE_ALTBOOT
+
 #endif
 		flashchip->chip_size = 512*1024; // песочница для SDK в 512 килобайт flash
 		// Всё - включаем кеширование, далее можно вызывать процедуры из flash
@@ -479,8 +486,8 @@ void ICACHE_FLASH_ATTR startup(void)
 	read_macaddr_from_otp(info.st_mac);
 	wifi_softap_cacl_mac(info.ap_mac, info.st_mac);
 	// начальный IP, mask, gw для AP
-	info.ap_gw = info.ap_ip = 0x104A8C0; // ip 192.168.4.1
-	info.ap_mask = 0x00FFFFFF; // 255.255.255.0
+	info.ap_gw = info.ap_ip = DEFAULT_SOFTAP_IP; // 0x104A8C0; ip 192.168.4.1
+	info.ap_mask = DEFAULT_SOFTAP_MASK; // 0x00FFFFFF; 255.255.255.0
 	ets_timer_init();
 	lwip_init();
 //	espconn_init(); // данный баг не используется

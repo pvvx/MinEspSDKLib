@@ -1,8 +1,11 @@
 #ifndef _sdk_config_h_
 #define _sdk_config_h_
 
-#define DEF_SDK_VERSION 1410 // 1302 // ver 1.3.0 + patch (lib_1.3.0_deep_sleep_plus_freq_offset_plus_freedom_callback_02.zip SDK ver: 1.3.0 compiled @ Aug 19 2015 17:50:07)
-#define SDK_VERSION_TXT "1.4.1"
+#define DEF_SDK_VERSION 1520 // 1302 // ver 1.3.0 + patch (lib_1.3.0_deep_sleep_plus_freq_offset_plus_freedom_callback_02.zip SDK ver: 1.3.0 compiled @ Aug 19 2015 17:50:07)
+#define SDK_VERSION_TXT "1.5.2"
+
+#define DEFAULT_SOFTAP_IP	0x0104A8C0 // ip 192.168.4.1
+#define DEFAULT_SOFTAP_MASK 0x00FFFFFF // mask 255.255.255.0
 
 #define DEBUGSOO	2  // 0 - откл вывода, 1 - минимум, 2 - норма, >3 - текушая отладка, >4 - удалить что найдется :)
 
@@ -23,6 +26,7 @@
 
 #ifndef USE_MAX_IRAM
 //	#define USE_MAX_IRAM  48 // использовать часть cache под IRAM, IRAM size = 49152 байт
+	#define USE_MAX_IRAM  32 // использовать часть IRAM под переменные LWIP (uint32_t only!)
 #endif
 
 /*  USE_FIX_QSPI_FLASH - использовать фиксированную частоту работы QPI

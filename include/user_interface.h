@@ -67,7 +67,11 @@ enum {
     USER_TASK_PRIO_1,
     USER_TASK_PRIO_2,
     USER_TASK_PRIO_MAX,
+#if DEF_SDK_VERSION > 1410
+	SDK_TASK_PRIO = 2
+#else
 	SDK_TASK_PRIO = 22
+#endif
 };
 
 
@@ -108,7 +112,7 @@ const char *system_get_sdk_version(void);
 #define SYS_BOOT_NORMAL_BIN		0
 #define SYS_BOOT_TEST_BIN		1
 
-uint8 system_get_boot_version(void);
+uint8 system_get_boot_version(void); 
 uint32 system_get_userbin_addr(void);
 uint8 system_get_boot_mode(void);
 bool system_restart_enhance(uint8 bin_type, uint32 bin_addr);
