@@ -116,6 +116,7 @@
 									<listOptionValue builtIn="false" value="pp"/>
 									<listOptionValue builtIn="false" value="net80211"/>
 									<listOptionValue builtIn="false" value="mwpa"/>
+									<listOptionValue builtIn="false" value="crypto"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.1699459462" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/lib}&quot;"/>
